@@ -9,8 +9,10 @@ on:
       - dev
 
 env:
-  IMAGE_NAME: ${{ secrets.DOCKERHUB_USERNAME }}/intranet-newdeal
+  env:
+  IMAGE_NAME: tidianesar09/intranet-newdeal
   IMAGE_TAG: ${{ github.sha }}
+  BASE_IMAGE: nginx:alpine3.23-slim
 
 jobs:
 
