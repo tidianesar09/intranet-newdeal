@@ -31,8 +31,12 @@ jobs:
             --tag ${{ env.IMAGE_NAME }}:latest \
             .
 
-      - name: Sauvegarder l'image
-        run: docker save ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} | gzip > image.tar.gz
+      - - name: Sauvegarder l'image
+  run: |
+    docker save \
+      ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} \
+      ${{ env.IMAGE_NAME }}:latest \
+      | gzip > image.tar.gz
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
