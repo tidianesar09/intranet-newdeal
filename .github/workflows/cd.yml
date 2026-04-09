@@ -1,0 +1,98 @@
+# ============================================================
+# PIPELINE CD – Branche prod
+# Intranet New Deal Technologique – MCEN Sénégal
+# ============================================================
+name: CD – Scan & Déploiement (prod)
+
+on:
+  push:
+    branches:
+      - prod
+
+env:
+  IMAGE_NAME: ${{ secrets.DOCKERHUB_USERNAME }}/intranet-newdeal
+  CONTAINER_NAME: intranet-newdeal-prod
+
+jobs:
+
+  # ─────────────────────────────────────────────
+  # JOB 1 : Scan de sécurité avant déploiement
+  # ─────────────────────────────────────────────
+  security-scan:
+    name: 🔒 Scan Sécurité Pré-Déploiement
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout du code source
+        uses: actions/checkout@v4
+
+      - name: Connexion à Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Récupérer l'image depuis Docker Hub
+        run: docker pull ${{ env.IMAGE_NAME }}:latest
+
+      # Scan Trivy – bloque si vulnérabilité CRITICAL
+      - name: Scan Trivy (bloque si CRITICAL)
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ${{ env.IMAGE_NAME }}:latest
+          format: 'table'
+          exit-code: '1'
+          ignore-unfixed: false
+          vuln-type: 'os,library'
+          severity: 'CRITICAL'
+
+      # Scan des secrets
+      - name: Scan des secrets avec Gitleaks
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITLEAKS_LICENSE: ${{ secrets.GITLEAKS_LICENSE }}
+
+      - name: ✅ Scan validé – Aucune vulnérabilité critique
+        run: echo "L'image est sûre pour le déploiement en production."
+
+
+  # ─────────────────────────────────────────────
+  # JOB 2 : Déploiement sur runner_prod (port 80)
+  # ─────────────────────────────────────────────
+  deploy:
+    name: 🚀 Déploiement Production
+    runs-on: [self-hosted, runner_prod]
+    needs: security-scan
+
+    steps:
+      - name: Connexion à Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Récupérer la dernière image
+        run: docker pull ${{ env.IMAGE_NAME }}:latest
+
+      - name: Arrêter et supprimer l'ancien conteneur (si existant)
+        run: |
+          docker stop ${{ env.CONTAINER_NAME }} 2>/dev/null || true
+          docker rm   ${{ env.CONTAINER_NAME }} 2>/dev/null || true
+
+      - name: Déployer le nouveau conteneur sur le port 80
+        run: |
+          docker run -d \
+            --name ${{ env.CONTAINER_NAME }} \
+            --restart unless-stopped \
+            -p 80:80 \
+            ${{ env.IMAGE_NAME }}:latest
+
+      - name: Vérifier que le conteneur est actif
+        run: |
+          sleep 5
+          docker ps | grep ${{ env.CONTAINER_NAME }}
+          echo "✅ Intranet déployé et accessible sur http://localhost:80"
+
+      - name: Nettoyer les images obsolètes
+        run: docker image prune -f

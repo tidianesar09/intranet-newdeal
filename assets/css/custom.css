@@ -1,0 +1,100 @@
+/* =============================================
+   INTRANET – Ministère de la Communication
+   Personnalisation New Deal Technologique SN
+   ============================================= */
+
+/* Couleurs nationales sénégalaises : vert, jaune, rouge */
+:root {
+  --sn-green:  #00853F;
+  --sn-yellow: #FDEF42;
+  --sn-red:    #E31B23;
+  --sn-dark:   #0d1b2a;
+  --sn-light:  #f4f7f6;
+}
+
+/* Header : bande verte en haut */
+#header {
+  background: linear-gradient(135deg, var(--sn-dark) 0%, #1a3a2a 100%);
+  border-bottom: 3px solid var(--sn-green);
+}
+
+#header .logo strong {
+  color: var(--sn-green);
+  font-size: 1.1em;
+}
+
+#header .logo span {
+  color: var(--sn-yellow);
+  font-size: 0.75em;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* Bannière : dégradé vert sénégalais */
+#banner {
+  background-image: linear-gradient(
+    135deg,
+    rgba(0,133,63,0.92) 0%,
+    rgba(13,27,42,0.95) 60%,
+    rgba(227,27,35,0.3) 100%
+  ), url('images/pic11.jpg');
+  background-size: cover;
+  background-position: center;
+}
+
+#banner .inner h1 {
+  font-size: 2.2rem;
+  line-height: 1.3;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+}
+
+/* Boutons primaires : vert sénégalais */
+.button.primary,
+input[type="submit"].primary {
+  background-color: var(--sn-green) !important;
+  border-color: var(--sn-green) !important;
+}
+
+.button.primary:hover,
+input[type="submit"].primary:hover {
+  background-color: #006830 !important;
+  border-color: #006830 !important;
+}
+
+/* Titres des sections : accent vert */
+.major h2::after,
+.major h3::after {
+  background-color: var(--sn-green) !important;
+}
+
+/* Bandeau bas de section */
+#contact {
+  background: linear-gradient(135deg, var(--sn-dark) 0%, #1a3a2a 100%);
+}
+
+/* Footer */
+#footer {
+  background: var(--sn-dark);
+  border-top: 3px solid var(--sn-green);
+}
+
+/* Badge nouveau */
+.badge-newdeal {
+  display: inline-block;
+  background: var(--sn-green);
+  color: white;
+  font-size: 0.65em;
+  padding: 2px 8px;
+  border-radius: 3px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  vertical-align: middle;
+  margin-left: 6px;
+}
+
+/* Responsive mobile */
+@media screen and (max-width: 736px) {
+  #banner .inner h1 {
+    font-size: 1.4rem;
+  }
+}
