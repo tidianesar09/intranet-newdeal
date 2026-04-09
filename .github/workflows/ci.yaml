@@ -1,9 +1,7 @@
-name: CI Pipeline dev
+name: CI dev
 
 on:
   push:
-    branches: [dev]
-  pull_request:
     branches: [dev]
 
 jobs:
@@ -12,12 +10,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: docker/setup-buildx-action@v3
-      - name: Build
+      - name: Build et save
         run: |
-          IMG="tidianesar09/intranet-newdeal"
-          TAG="${{ github.sha }}"
-          docker build --tag "$IMG:$TAG" --tag "$IMG:latest" .
-          docker save "$IMG:$TAG" "$IMG:latest" | gzip > image.tar.gz
+          docker build -t tidianesar09/intranet-newdeal:${{ github.sha }} -t tidianesar09/intranet-newdeal:latest .
+          docker save tidianesar09/intranet-newdeal:${{ github.sha }} tidianesar09/intranet-newdeal:latest | gzip > image.tar.gz
       - uses: actions/upload-artifact@v4
         with:
           name: docker-image
@@ -35,9 +31,6 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: Push
-        run: |
-          IMG="tidianesar09/intranet-newdeal"
-          TAG="${{ github.sha }}"
-          docker push "$IMG:$TAG"
-          docker push "$IMG:latest"
+      - run: |
+          docker push tidianesar09/intranet-newdeal:${{ github.sha }}
+          docker push tidianesar09/intranet-newdeal:latest
