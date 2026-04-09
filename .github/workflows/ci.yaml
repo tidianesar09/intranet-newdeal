@@ -11,6 +11,6 @@ jobs:
       - uses: actions/checkout@v4
       - uses: docker/setup-buildx-action@v3
       - name: Build et save
-        run: |
+        run: docker build -t tidianesar09/intranet-newdeal:latest .
           docker build -t tidianesar09/intranet-newdeal:${{ github.sha }} -t tidianesar09/intranet-newdeal:latest .
           docker save tidianesar09/intranet-newdeal:${{ github
