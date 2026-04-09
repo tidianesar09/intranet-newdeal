@@ -8,8 +8,7 @@ on:
 env:
   IMAGE_NAME: webapp-ci-cd
   IMAGE_TAG: 1.0.1
-  DOCKER_REGISTRY: ${{ secrets.DOCKERHUB_USERNAME }}
-
+  DOCKER_REGISTRY: tidianesar09
 jobs:
 
   # ===============================
@@ -50,7 +49,7 @@ jobs:
   # ===============================
   deploy:
     needs: ci
-    runs-on: runner-lab
+    runs-on: ubuntu-latest
 
     steps:
       - name: Pull latest image
