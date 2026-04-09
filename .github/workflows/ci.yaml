@@ -111,10 +111,9 @@ jobs:
           server_address: smtp.gmail.com
           server_port: 587
           username: ${{ secrets.MAIL_USERNAME }}
-          password: ${{ secrets.MAIL_PASSWORD }}
-          subject: "✅ [CI Intranet MCEN] Pipeline réussi – ${{ github.ref_name }}"
+          password: ${{ secrets.MAIL_PASSWORD subject: "✅ [CI Intranet MCEN] Pipeline réussi – ${{ github.ref_name }}"
           to: ${{ secrets.NOTIFY_EMAIL }}
-          from: DevOps MCEN <${{ secrets.MAIL_USERNAME }}>
+         from: DevOps MCEN <${{ secrets.MAIL_USERNAME }}>
           body: |
             Bonjour,
             Le pipeline CI s'est exécuté avec succès.
@@ -122,4 +121,4 @@ jobs:
             Branche : ${{ github.ref_name }}
             Image   : ${{ env.IMAGE_NAME }}:latest
             Commit  : ${{ github.sha }}
-            Auteur  : ${{ github.
+            Auteur  : ${{ github.actor }}
