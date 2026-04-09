@@ -100,7 +100,7 @@ jobs:
       - name: Push vers Docker Hub
         run: |
           docker push ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
-          docker push ${{ env.IMAGE_NAME }}:latest
+          
 
   notify-success:
     name: 📧 Notification Email – Succès
